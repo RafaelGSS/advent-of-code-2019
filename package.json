@@ -1,0 +1,12 @@
+{
+  "name": "advent-of-code-2019",
+  "version": "1.0.0",
+  "description": "Building exercices just for fun (when I have time)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

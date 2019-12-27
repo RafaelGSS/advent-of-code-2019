@@ -10,7 +10,6 @@ defmodule Day2 do
   def solveComputeOperation(computers, computer, current_pos \\ 0)
 
   def solveComputeOperation(computers, %IntcodeComputer{opcode: 99}, _current_pos), do: computers
-
   def solveComputeOperation(computers, %IntcodeComputer{} = computer, current_pos) do
     [first_value, second_value] = Enum.map(computer.numbers, &Enum.at(computers, &1))
     new_pos = current_pos + 4

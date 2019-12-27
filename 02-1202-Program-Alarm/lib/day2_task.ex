@@ -10,16 +10,7 @@ defmodule Mix.Tasks.Day2 do
   end
 
   def run(_) do
-    computers =
-      get_input_data()
-      |> Enum.chunk_every(4)
-      |> Enum.map(&parseAsIntcode/1)
+    computers = get_input_data()
     Day2.run(computers)
   end
-
-  def parseAsIntcode([opcode, num1, num2, result]) do
-    %Day2.IntcodeComputer{opcode: opcode, numbers: [num1, num2], result: result}
-  end
-
-  def parseAsIntcode(_tail), do: %Day2.IntcodeComputer{}
 end

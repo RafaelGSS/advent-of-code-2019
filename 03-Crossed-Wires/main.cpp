@@ -33,6 +33,9 @@ struct Point {
   int m_x;
   int m_y;
 
+  bool operator==(Point& p) const {
+    return p.m_x == m_x && p.m_y == m_y;
+  }
   Point() {}
   Point(int x, int y): m_x(x), m_y(y) {}
   Point(Point& p): m_x(p.m_x), m_y(p.m_y) {}
@@ -70,6 +73,7 @@ class Day3 {
           }) != find_at_wire.end(); 
 
       if (found) {
+        this->intersections.push_back(new Point(this->current_point));
         int manhattan_distance = abs(this->current_point->m_x) + abs(this->current_point->m_y);
         if (manhattan_distance < this->nearest_intersection) {
           this->nearest_intersection = manhattan_distance;
@@ -125,6 +129,11 @@ class Day3 {
       this->wire_idx = idx;
     }
 
+    Board get_wire(int idx) {
+      return this->wires[idx];
+    }
+
+    Board intersections;
   private:
     std::vector<Board> wires {Board(), Board()};
 
@@ -145,7 +154,29 @@ int main() {
     day->reset_current_point();
     wire_idx++;
   }
-  std::cout << "Done = " <<  day->get_nearest_intersection() << std::endl;
 
+  std::cout << "Doned first part" << std::endl;
+  auto wire1 = day->get_wire(0);
+  auto wire2 = day->get_wire(1);
+
+  int steps = std::numeric_limits<int>::max();
+  for (Point* i : day->intersections) {
+    int sequence = 0;
+    for (Point* p : wire1) {
+      sequence++;
+      if (*p == *i) break;
+    }
+
+    for (Point* p : wire2) {
+      sequence++;
+      if (*p == *i) break;
+    }
+
+    if (sequence < steps) {
+      steps = sequence;
+    }
+  }
+
+  std::cout << "Done = " <<  day->get_nearest_intersection() << " Steps = " << steps << std::endl;
   return 0;
 }

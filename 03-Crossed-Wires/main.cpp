@@ -83,7 +83,6 @@ class Day3 {
         this->current_point->m_y += y_distance;
 
         if (this->wire_idx == 1) {
-          std::cout << "Finding interface..." << std::endl;
           this->find_intersec(this->wires[0]);
         }
         this->wires[this->wire_idx].push_back(new Point(this->current_point));

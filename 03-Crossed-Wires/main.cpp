@@ -6,7 +6,7 @@
 #include <list>
 #include <algorithm>
 #include <stdlib.h>
-
+#include <limits>
 
 std::vector<std::string> split(const std::string& str, const std::string& delim)
 {
@@ -39,12 +39,12 @@ struct Point {
   Point(Point* p): m_x(p->m_x), m_y(p->m_y) {}
 };
 
-typedef std::list<Point*> Board;
+typedef std::vector<Point*> Board;
 
 class Day3 {
   public:
     Day3() {
-      this->nearest_intersection = -1;
+      this->nearest_intersection = std::numeric_limits<int>::max();
       this->current_point = new Point(0, 0);
     }
 
@@ -64,25 +64,34 @@ class Day3 {
       return fdata;
     }
 
+    void find_intersec(Board& find_at_wire) {
+      auto found = std::find_if(find_at_wire.begin(), find_at_wire.end(), [&](Point* p) {
+          return p->m_x == this->current_point->m_x && p->m_y == this->current_point->m_y;
+          }) != find_at_wire.end(); 
+
+      if (found) {
+        int manhattan_distance = abs(this->current_point->m_x) + abs(this->current_point->m_y);
+        if (manhattan_distance < this->nearest_intersection) {
+          this->nearest_intersection = manhattan_distance;
+        }
+      }
+    }
+
     void walk_direction(const int& walks, int x_distance, int y_distance) {
       for (int i = 0; i < walks; i++) {
         this->current_point->m_x += x_distance;
         this->current_point->m_y += y_distance;
-        // slow!
-        auto found = std::find_if(this->board.begin(), this->board.end(), [&](Point* p) {
-            return p->m_x == this->current_point->m_x && p->m_y == this->current_point->m_y;
-            });
 
-        if (found != this->board.end()) {
-          int manhattan_distance = abs(this->current_point->m_x) + abs(this->current_point->m_y);
-          if (manhattan_distance < this->nearest_intersection) {
-            this->nearest_intersection = manhattan_distance;
-          }
-        } else {
-          this->board.push_back(new Point(this->current_point));
+        if (this->wire_idx == 1) {
+          std::cout << "Finding interface..." << std::endl;
+          this->find_intersec(this->wires[0]);
         }
-
+        this->wires[this->wire_idx].push_back(new Point(this->current_point));
       }
+    }
+
+    void reset_current_point() {
+      this->current_point = new Point(0, 0);
     }
 
     void process_instructions(std::vector<std::string> instructions) {
@@ -91,7 +100,7 @@ class Day3 {
         const int& walks = std::stoi(ins.substr(1, ins.length()));
         switch (dir) {
           case 'U':
-            walk_direction(walks, 1, 0);
+            walk_direction(walks, 0, 1);
             break;
           case 'L':
             walk_direction(walks, -1, 0);
@@ -100,7 +109,7 @@ class Day3 {
             walk_direction(walks, 0, -1);
             break;
           case 'R':
-            walk_direction(walks, 0, 1);
+            walk_direction(walks, 1, 0);
             break;
           default:
             std::cout << "Invalid direction! Exiting..." << std::endl;
@@ -112,22 +121,32 @@ class Day3 {
     int get_nearest_intersection() {
       return this->nearest_intersection;
     }
+
+    void set_wire_idx(unsigned short int idx) {
+      this->wire_idx = idx;
+    }
+
   private:
-    Board board;
+    std::vector<Board> wires {Board(), Board()};
+
     Point* current_point;
     int nearest_intersection;
+    unsigned short int wire_idx;
 };
 
 
 int main() {
   Day3* day = new Day3();
   const auto fdata = day->get_input_data();
+  unsigned short int wire_idx = 0;
 
   for (auto& instructions : fdata) {
+    day->set_wire_idx(wire_idx);
     day->process_instructions(instructions);
-    std::cout << "Done = " <<  day->get_nearest_intersection() << std::endl;
-    exit(0);
+    day->reset_current_point();
+    wire_idx++;
   }
+  std::cout << "Done = " <<  day->get_nearest_intersection() << std::endl;
 
   return 0;
 }

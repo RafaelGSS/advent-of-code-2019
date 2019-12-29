@@ -24,8 +24,8 @@ function main() {
   console.log(`Part two: ${response2}`)
 }
 
-main()
-
 module.exports = {
-  calcMass
+  calcMass,
+  calcFuel,
+  calcFullFuel
 }

@@ -155,7 +155,6 @@ int main() {
     wire_idx++;
   }
 
-  std::cout << "Doned first part" << std::endl;
   auto wire1 = day->get_wire(0);
   auto wire2 = day->get_wire(1);
 

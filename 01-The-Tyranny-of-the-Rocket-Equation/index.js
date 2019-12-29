@@ -6,5 +6,11 @@ function calcMass(input) {
     .reduce((prev, curr) => prev + curr, 0)
 }
 
-const response = calcMass(input)
-console.log(`Response: ${response}`)
+function main() {
+  const response = calcMass(input)
+  console.log(`Response: ${response}`)
+}
+
+module.exports = {
+  calcMass
+}
